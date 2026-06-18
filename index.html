@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="fr" id="htmlTag">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyberstore Market Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --card-bg: #141414;
+            --text: #ffffff;
+            --accent: #00ffcc;
+            --subtext: #888;
+            --green: #27ae60;
+            --blue: #3498db;
+            --red: #e74c3c;
+        }
+        .light {
+            --bg: #f5f6fa;
+            --card-bg: #ffffff;
+            --text: #2f3640;
+            --subtext: #7f8c8d;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;                                                                           padding-bottom: 120px;                                                               transition: background 0.3s, color 0.3s;
+            overflow-x: hidden;
+        }
+
+        header { padding: 20px; text-align: center; background: rgba(0,0,0,0.3); border-bottom: 1px solid rgba(128,128,128,0.1); backdrop-filter: blur(10px); }
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .logo { font-weight: 900; font-size: 1.5em; letter-spacing: -0.5px; color: var(--accent); text-shadow: 0 0 10px rgba(0,255,204,0.2); }
+        .header-actions { display: flex; gap: 8px; align-items: center; }
+
+        #search { width: 90%; padding: 12px 15px; border-radius: 12px; border: 1px solid rgba(128,128,128,0.2); background: rgba(255,255,255,0.05); color: var(--text); font-size: 1em; outline: none; transition: border 0.3s; }
+        #search:focus { border-color: var(--accent); }
+
+        .vip-banner { margin: 20px; padding: 25px; border-radius: 25px; background: #161616; color: white; border: 1px solid #222; transition: all 0.5s ease; position: relative; overflow: hidden; }
+        .vip-banner.active { background: linear-gradient(135deg, #00ffcc, #0099ff); box-shadow: 0 8px 25px rgba(0, 255, 204, 0.3); border: none; color: #000; }
+
+        .why-us { margin: 20px; padding: 15px; }
+        .why-us-title { font-size: 1.2em; font-weight: bold; margin-bottom: 15px; text-align: center; color: var(--accent); letter-spacing: 1px; }
+        .why-us-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+        .why-us-card { background: var(--card-bg); padding: 20px; border-radius: 18px; border: 1px solid rgba(128,128,128,0.1); text-align: center; transition: transform 0.3s; }                                                                                      .why-us-card:hover { transform: translateY(-3px); }
+        .why-us-card h4 { margin: 5px 0; font-size: 1.05em; color: var(--text); }            .why-us-card p { margin: 5px 0 0 0; font-size: 0.85em; color: var(--subtext); line-height: 1.4; }
+        /* GRILLE */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; padding: 15px; }
+        .card-container { height: 340px; perspective: 1000px; }
+        .card-front { width: 100%; height: 100%; border-radius: 22px; border: 1px solid rgba(128,128,128,0.1); background: var(--card-bg); box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; padding: 12px; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; }
+        .card-container:hover .card-front { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+
+        .img-box { width: 100%; height: 110px; background: linear-gradient(145deg, #1e1e1e, #252525); border-radius: 16px; overflow: hidden; display: flex; justify-content: center; align-items: center; position: relative; }
+        .img-box img { width: 100%; height: 100%; object-fit: cover; }
+
+        .mutation-badge { position: absolute; top: 6px; right: 6px; background: rgba(0,0,0,0.75); color: var(--accent); padding: 3px 8px; border-radius: 20px; font-size: 0.7em; font-weight: bold; border: 1px solid rgba(0,255,204,0.3); backdrop-filter: blur(4px); }
+        /* SELECT CUSTOM */
+        .custom-select-wrapper { position: relative; width: 100%; margin: 4px 0; }
+        .custom-select-trigger { background: rgba(255,255,255,0.05); color: var(--accent); padding: 8px 10px; border-radius: 10px; font-size: 0.8em; font-weight: bold; border: 1px solid rgba(128,128,128,0.1); display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .custom-options { display: none; position: absolute; bottom: 105%; left: 0; right: 0; background: #181818; border: 1px solid #333; border-radius: 12px; max-height: 180px; overflow-y: auto; z-index: 100; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        .custom-options.show { display: block; }                                             .custom-option { padding: 8px 12px; font-size: 0.8em; color: #fff; cursor: pointer; transition: background 0.2s; }
+        .custom-option:hover { background: var(--accent); color: #000; font-weight: bold; }
+
+        @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        .pop-animation { animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+
+        /* THEMES MUTATIONS VISUELS RECONNECTÉS */
+        .mut-curseur { background: linear-gradient(135deg, #1c0303 0%, #3a0505 100%) !important; border-color: #ff3333 !important; box-shadow: 0 0 15px rgba(255, 51, 51, 0.2); }
+        .mut-cyber { background: linear-gradient(135deg, #00111a 0%, #002b3d 100%) !important; border-color: #00ffcc !important; box-shadow: 0 0 15px rgba(0, 255, 204, 0.25); }
+        @keyframes rainbowBg { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        .mut-arc-en-ciel { background: linear-gradient(45deg, #ff3366, #ff9933, #33ccff, #33ff66) !important; background-size: 300% 300% !important; animation: rainbowBg 6s ease infinite !important; border-color: #fff !important; }
+        .mut-arc-en-ciel * { color: #fff !important; text-shadow: 1px 1px 3px rgba(0,0,0,0.6); }
+        .mut-fantome { background: rgba(255, 255, 255, 0.03) !important; backdrop-filter: blur(10px) !important; border-color: rgba(255, 255, 255, 0.2) !important; opacity: 0.85; }
+        .mut-divin { background: linear-gradient(135deg, #1f1b01 0%, #443b02 100%) !important; border-color: #ffea75 !important; box-shadow: 0 0 20px rgba(255, 234, 117, 0.3); }
+        .mut-gold { background: linear-gradient(135deg, #ffd700 0%, #b8860b 100%) !important; border-color: #fff !important; }
+        .mut-gold * { color: #000 !important; font-weight: bold !important; }
+        .mut-gold .btn-buy, .mut-gold .custom-select-trigger { background: #000 !important; color: #ffd700 !important; }
+        .mut-diamant { background: linear-gradient(135deg, #e0f7fa 0%, #80deea 100%) !important; border-color: #ffffff !important; }
+        .mut-diamant * { color: #004d40 !important; font-weight: bold !important; }
+        .mut-diamant .btn-buy, .mut-diamant .custom-select-trigger { background: #00b0ff !important; color: white !important; }
+        @keyframes lavaPulse { 0% { box-shadow: 0 0 10px #ff3300; } 50% { box-shadow: 0 0 20px #ff6600; } 100% { box-shadow: 0 0 10px #ff3300; } }                                .mut-lava { background: linear-gradient(135deg, #1f0500 0%, #521101 100%) !important; border-color: #ff4500 !important; animation: lavaPulse 2s infinite !important; }
+        .mut-galaxie { background: linear-gradient(135deg, #090014 0%, #2b0054 100%) !important; border-color: #cc33ff !important; box-shadow: 0 0 18px rgba(204, 51, 255, 0.3); }
+        .mut-candy { background: linear-gradient(135deg, #ffe5ec 0%, #ffb3c6 100%) !important; border-color: #ff4d6d !important; }
+        .mut-candy * { color: #ff4d6d !important; font-weight: bold !important; }
+
+        /* MODALS */                                                                         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 2000; justify-content: center; align-items: center; backdrop-filter: blur(6px); }
+        .modal-content { background: #161616; padding: 25px; border-radius: 28px; border: 2px solid var(--green); text-align: center; width: 80%; max-width: 300px; color: white; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+
+        .auth-tabs { display: flex; justify-content: space-around; margin-bottom: 20px; border-bottom: 1px solid #222; }
+        .auth-tab { padding: 10px; cursor: pointer; color: var(--subtext); font-weight: bold; }
+        .auth-tab.active { color: var(--accent); border-bottom: 2px solid var(--accent); }
+        .auth-form { display: none; }
+        .auth-form.active { display: block; }
+
+        /* PANELS COULISSANTS (PANIER ET SCRIPTS SUB) */
+        .side-panel { position: fixed; top: 0; right: -100%; width: 85%; max-width: 360px; height: 100%; background: #111; z-index: 2500; box-sizing: border-box; padding: 20px; display: flex; flex-direction: column; transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1); border-left: 1px solid #222; }                                                 .side-panel.open { right: 0; }
+        .cart-item, .script-item { display: flex; flex-direction: column; background: #181818; padding: 14px; margin-bottom: 12px; border-radius: 16px; border: 1px solid #222; }
+        .script-item { border-left: 3px solid var(--accent); }                               .cart-item-row, .script-item-row { display: flex; justify-content: space-between; align-items: center; }                                                                  .btn-remove-item { background: transparent; color: var(--red); padding: 4px; font-size: 0.8em; margin-top: 5px; text-align: left; width: fit-content; border: none; cursor: pointer; }
+
+        /* NAV BOTTOM */
+        .nav-bottom { position: fixed; bottom: 0; width: 100%; background: var(--card-bg); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid rgba(128,128,128,0.1); z-index: 1000; box-shadow: 0 -5px 20px rgba(0,0,0,0.3); }                                                                                            .nav-item { font-size: 0.8em; text-align: center; cursor: pointer; color: var(--subtext); flex: 1; font-weight: 500; }
+        .nav-item.active, .nav-item:hover { color: var(--accent); }
+
+        button { border: none; cursor: pointer; border-radius: 12px; font-weight: 600; transition: all 0.2s ease; outline: none; }
+        button:active { transform: scale(0.96); }
+        .btn-buy { width: 100%; background: var(--accent); color: black; padding: 8px; font-size: 0.85em; font-weight: bold; border-radius: 12px; }                               .btn-unlock { width: 100%; background: linear-gradient(135deg, #00ffcc, #0099ff); color: black; padding: 10px; font-weight: bold; font-size: 0.9em; border-radius: 12px; margin-top: 8px; }
+        .btn-voice { width: 100%; background: rgba(52, 152, 219, 0.1); color: #74b9ff; padding: 6px; font-size: 0.8em; border-radius: 12px; border: 1px solid rgba(52, 152, 219, 0.2); font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 5px; }
+        @keyframes wave { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(1.6); } }                                                                                    .wave-line { width: 2px; height: 10px; background: #74b9ff; display: inline-block; animation: wave 1s ease infinite; display: none;}
+        .playing .wave-line { display: inline-block; }                                       .playing .wave-line:nth-child(2) { animation-delay: 0.2s; }
+        .playing .wave-line:nth-child(3) { animation-delay: 0.4s; }
+
+        .input-field { width: 100%; padding: 12px; margin: 8px 0; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08); background: rgba(0,0,0,0.5); color: #fff; box-sizing: border-box; }
+
+        footer {                                                                                 margin-top: 60px;
+            padding: 40px 20px;
+            background: #050505;
+            border-top: 1px solid #1a1a1a;
+            text-align: center;
+            color: #555;                                                                         font-size: 0.85em;
+        }
+        .footer-links { margin-top: 15px; }                                                  .footer-links a { color: #888; text-decoration: none; margin: 0 12px; transition: color 0.2s; }                                                                           .footer-links a:hover { color: var(--accent); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-top">
+            <div class="logo">Cyberstore Market</div>
+            <div class="header-actions">
+                <button onclick="document.getElementById('htmlTag').classList.toggle('light')" style="background:#222; color:white; padding: 8px 12px;">🌓 Thème</button>
+                <button id="loginBtn" style="background:var(--accent); color:black; padding: 8px 12px;" onclick="toggleAuthModal(true)">Connexion</button>                            </div>
+        </div>
+        <input type="text" id="search" placeholder="Rechercher un personnage..." oninput="handleSearch(this.value)">                                                          </header>
+    <div class="vip-banner" id="vipStatusBanner">
+        <h2 style="margin-top:0; font-size: 1.3em;" id="vipBannerTitle">👑 Statut : Membre Standard</h2>                                                                          <p style="opacity:0.8; margin-bottom:0; font-size:0.85em;" id="vipBannerDesc">• Devenez VIP pour débloquer -20% sur tout le catalogue !</p>                           </div>
+    <div class="why-us">                                                                     <div class="why-us-title">🛡️ Pourquoi nous choisir ?</div>
+        <div class="why-us-grid">
+            <div class="why-us-card"><h4>⚡ Livraison Instantanée</h4><p>Vos personnages et scripts sont activés immédiatement.</p></div>
+            <div class="why-us-card"><h4>🔒 Paiements 100% Sécurisés</h4><p>Transactions transparentes directement via PayPal.</p></div>
+            <div class="why-us-card"><h4>👑 Support Premium 24/7</h4><p>Une équipe réactive toujours disponible pour vous aider.</p></div>                                        </div>                                                                           </div>
+
+    <div id="modal" class="modal"><div class="modal-content"><div style="font-size:2.5em; color:var(--green); margin-bottom:5px;">✓</div><h3>Article ajouté !</h3><p id="modal-text" style="font-size:0.9em; opacity:0.9;"></p><button onclick="closeModal()" style="background:#222; color:white; padding: 8px 20px; margin-top:10px;">Continuer</button></div></div>
+    <div id="vipStoreModal" class="modal">
+        <div class="modal-content" style="border-color: #00ffcc; max-width: 300px;">             <h3>Devenir Membre VIP</h3>                                                          <p style="font-size:0.85em; opacity:0.8; margin-bottom:15px;">Profitez de Réductions exclusives de -20% de façon permanente.</p>
+            <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 12px; font-weight: bold; color: var(--accent); margin-bottom: 15px;" id="vipPriceTag">Abonnement : 9.99 € / mois</div>
+            <button style="background: linear-gradient(135deg, #00ffcc, #0099ff); color: black; width: 100%; padding: 12px; font-weight: bold;" onclick="buyVipGrade()">🛒 Activer mon Grade VIP</button>                                                                  <button style="background: transparent; color: rgba(255,255,255,0.5); width: 100%; margin-top: 10px;" onclick="toggleVipModal(false)">Fermer</button>                 </div>                                                                           </div>
+
+    <div id="authModal" class="modal">
+        <div class="modal-content" style="border-color: var(--accent); max-width: 320px;">
+            <div id="authTabsHeader">
+                <div class="auth-tabs">
+                    <div id="tabLogin" class="auth-tab active" onclick="switchAuthTab('login')">Connexion</div>                                                                               <div id="tabRegister" class="auth-tab" onclick="switchAuthTab('register')">Inscription</div>                                                                          </div>
+            </div>
+            <form id="loginForm" class="auth-form active" onsubmit="handleLogin(event)">
+    <input type="text" id="loginUser" class="input-field" placeholder="Nom d'utilisateur" required>                                                                           <input type="password" id="loginPass" class="input-field" placeholder="Mot de passe" required>                                                                            <button type="submit" style="background: var(--accent); color: black; width: 100%; font-weight: bold; padding: 12px;">Se connecter</button>
+            </form>                                                                              <form id="registerForm" class="auth-form" onsubmit="handleRegister(event)">
+                <input type="text" id="regUser" class="input-field" placeholder="Identifiant" required>                                                                                   <input type="email" id="regEmail" class="input-field" placeholder="E-mail" required>                                                                                      <input type="password" id="regPass" class="input-field" placeholder="Mot de passe" required>                                                                              <button type="submit" style="background: var(--green); color: white; width: 100%; font-weight: bold; padding: 12px;">S'inscrire</button>
+            </form>                                                                              <div id="emailVerifyZone" style="display: none;">                                        <h4>📧 Code de Validation</h4>
+                <div style="background: rgba(255,255,255,0.05); padding: 8px; border-radius: 8px; color: #ffcc00; margin-bottom: 15px; font-size:0.85em;" id="simulatedEmailBox"></div>                                                                                        <input type="text" id="emailVerifyInput" class="input-field" placeholder="Entrez le code" style="text-align:center;">
+                <button style="background: var(--accent); color: black; width: 100%; padding: 12px; font-weight: bold;" onclick="validateEmailVerification()">Vérifier</button>
+            </div>
+            <button style="background: transparent; color: rgba(255,255,255,0.5); width: 100%; margin-top: 15px;" onclick="toggleAuthModal(false)">Annuler</button>
+        </div>                                                                           </div>
+
+    <div id="cartPanel" class="side-panel">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:1px solid #222; padding-bottom:15px;">
+            <h2 style="margin:0; color: white; font-size:1.3em;">🛒 Votre Panier</h2>
+            <div style="display: flex; gap: 5px;">                                                   <button style="background:var(--red); color:white; padding:5px 10px; font-size:0.8em;" onclick="clearCart()">Vider</button>
+                <button style="background:#222; color:white; padding:5px 10px; font-size:0.8em;" onclick="toggleCartPanel(false)">Fermer</button>
+            </div>                                                                           </div>                                                                               <div id="cartItemsContainer" style="flex:1; overflow-y:auto;"></div>                 <div style="border-top:1px solid #222; padding-top:15px;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:15px; font-weight:bold;"><span>Total :</span><span id="cartTotalPrice" style="color:var(--accent);">0.00 €</span></div>                                                                 <button style="background: linear-gradient(135deg, #27ae60, #00ffcc); color: black; width:100%; padding:14px; border-radius:12px; font-weight: bold; font-size:1em;" onclick="window.open('https://paypal.me/klm925', '_blank')">🚀 Passer au paiement PayPal</button>
+        </div>                                                                           </div>
+    <div id="scriptPanel" class="side-panel">                                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:1px solid #222; padding-bottom:15px;">                         <h2 style="margin:0; color: white; font-size:1.3em;">📜 Script Sub</h2>
+            <button style="background:#222; color:white; padding:5px 10px; font-size:0.8em;" onclick="toggleScriptPanel(false)">Fermer</button>
+        </div>                                                                               <div style="flex:1; overflow-y:auto;">
+            <div class="script-item">
+                <div class="script-item-row">
+                    <strong>🔑 Clé FunUp</strong>                                                        <span style="color:var(--accent); font-weight: bold;">10.00 €</span>                                                                                                  </div>                                                                               <p style="font-size:0.8em; color:var(--subtext); margin: 5px 0;">Déverrouillez l'accès aux options FunUp.</p>                                                             <button class="btn-unlock" onclick="window.open('https://paypal.me/klm925', '_blank')">⚡ Déverrouiller</button>                                                      </div>
+            <div class="script-item">                                                                <div class="script-item-row">                                                            <strong>🔑 Clé Chiracub</strong>                                                     <span style="color:var(--accent); font-weight: bold;">5.00 €</span>                                                                                                   </div>                                                                               <p style="font-size:0.8em; color:var(--subtext); margin: 5px 0;">Déverrouillez l'accès aux configurations Chiracub.</p>                                                   <button class="btn-unlock" onclick="window.open('https://paypal.me/klm925', '_blank')">⚡ Déverrouiller</button>                                                      </div>
+            <div class="script-item">                                                                <div class="script-item-row">                                                            <strong>🌶️ Clé Chili Hub</strong>                                                     <span style="color:var(--accent); font-weight: bold;">12.00 €</span>                                                                                                  </div>                                                                               <p style="font-size:0.8em; color:var(--subtext); margin: 5px 0;">Affiche le script d'exécution et redirige vers ChiliHub.fr</p>                                           <button class="btn-unlock" onclick="triggerChiliHubScript()">⚡ Déverrouiller</button>                                                                                </div>
+            <div class="script-item">                                                                <div class="script-item-row">                                                            <strong>👤 Clé Nameless Hub</strong>                                                 <span style="color:var(--accent); font-weight: bold;">15.00 €</span>                                                                                                  </div>                                                                               <p style="font-size:0.8em; color:var(--subtext); margin: 5px 0;">Débloquez l'accès premium au réseau Nameless Hub.</p>                                                    <button class="btn-unlock" onclick="window.open('https://namelesshub.fr', '_blank')">⚡ Déverrouiller</button>                                                        </div>                                                                           </div>                                                                           </div>
+    <div class="grid" id="grid"></div>
+    <div class="nav-bottom">
+        <div class="nav-item" onclick="toggleCartPanel(false); toggleScriptPanel(false); window.scrollTo({top: 0, behavior: 'smooth'});">🏠<br>Accueil</div>
+        <div class="nav-item" onclick="toggleScriptPanel(true); toggleCartPanel(false);">📜<br>Scripts</div>
+        <div class="nav-item" onclick="toggleCartPanel(true); toggleScriptPanel(false);">🛒<br>Panier (<span id="cart-count">0</span>)</div>                                      <div class="nav-item" onclick="toggleVipModal(true); toggleCartPanel(false); toggleScriptPanel(false);">👑<br>VIP</div>                                                   <div class="nav-item" onclick="document.getElementById('codeSecretModal').style.display='flex'">🔑<br>Code</div>                                                      </div>
+    <div id="codeSecretModal" class="modal">
+        <div class="modal-content" style="border-color: var(--accent); background: #111;">
+<h3>Accès Code Secret</h3>
+            <input type="text" id="secretCodeInput" class="input-field" placeholder="Code..." style="text-align: center;">
+            <button style="background: var(--accent); color: black; width: 100%; padding: 12px; font-weight: bold;" onclick="checkSecretCode()">Valider</button>                      <button style="background: transparent; color: rgba(255,255,255,0.4); width: 100%; margin-top: 10px;" onclick="document.getElementById('codeSecretModal').style.display='none'">Annuler</button>                                                           </div>
+    </div>
+    <footer>                                                                                 <p>© 2026 Cyberstore Market. Tous droits réservés.</p>
+        <div class="footer-links">                                                               <a href="#">Conditions Générales (CGV)</a> |
+            <a href="#">Politique de Confidentialité</a> |
+            <a href="#">Support 24/7</a>
+        </div>                                                                           </footer>
+    <script>                                                                                 let noms = [                                                                             "Griffin", "Hydra Dragon Cannelloni", "Dragon Gingerini", "Dragon Cannelloni",                                                                                            "Love Love Bear", "La Supreme Combinasion", "Celestial Pegasus", "Cerberus",                                                                                              "Popcuru and Fizzuru", "Rosey and Teddy", "Capitano Moby", "Cooki and Milki",
+            "Burguro And Fryuro", "Ketupat Bros", "Reinito Sleighito"
+        ];
+        let prixPersonnalises = {                                                                "Griffin": 37.50, "Hydra Dragon Cannelloni": 28.00, "Dragon Gingerini": 30.00,
+            "Dragon Cannelloni": 15.00, "Love Love Bear": 25.00, "La Supreme Combinasion": 50.00,                                                                                     "Celestial Pegasus": 10.00, "Cerberus": 6.00, "Popcuru and Fizzuru": 3.00,
+            "Rosey and Teddy": 8.00, "Capitano Moby": 5.00, "Cooki and Milki": 6.00,             "Burguro And Fryuro": 7.00, "Ketupat Bros": 10.00, "Reinito Sleighito": 1.00                                                                                          };
+
+        let mutationsBrainRot = ["Aucune mutation", "Curseur", "Cyber", "Arc-en-ciel", "Fantôme", "Divin", "Gold", "Diamant", "Lava", "Galaxie", "Candy"];
+        let imagesPersonnage = {                                                                 "Griffin": "https://images.proko.com/images/user/953119/art/353416/griffin-concept-art-800.jpg"                                                                       };
+
+        let cart = [];
+        let isVip = false;                                                                   let reductionActive = 1.0;                                                           let registeredUsers = {};
+        let currentUser = null;                                                              let currentGeneratedCode = null;
+        let tempUserRegistration = null;
+        // Fonction spéciale pour la clé Chili Hub : affiche le script et ouvre l'URL
+        function triggerChiliHubScript() {
+            alert("Voici votre script Chili Hub :\n\nloadstring(game:HttpGet(\"https://raw.githubusercontent.com/tienkhanh1/spicy/main/Chilli.lua\"))()");                            window.open('https://chilihub.fr', '_blank');                                    }
+
+        function calculerPrixMutation(prixDeBase, mutation) {
+            let prix = parseFloat(prixDeBase) * reductionActive;
+            if (mutation === "Curseur" || mutation === "Cyber") prix += 0.50;
+            else if (mutation === "Lava" || mutation === "Galaxie") prix *= 1.5;
+            return prix;
+        }
+
+        function renderGrid() {
+            const gridEl = document.getElementById('grid');                                      gridEl.innerHTML = "";
+            noms.forEach((nom, index) => {                                                           let prixDefaut = prixPersonnalises[nom] || 5.00;                                     let prixInitialCalcule = calculerPrixMutation(prixDefaut, "Aucune mutation").toFixed(2);
+                let imageSrc = imagesPersonnage[nom] || "";
+
+                let imageHTML = imageSrc ? `<img src="${imageSrc}" alt="${nom}">` : `<div style="width:100%;height:100%;background:linear-gradient(45deg, #222, #333); display:flex; align-items:center; justify-content:center; font-size:2em;">👾</div>`;
+                let optionsHTML = mutationsBrainRot.map(mut => `<div class="custom-option" onclick="selectMutationStyle('${nom}', ${prixDefaut}, ${index}, '${mut}')">${mut}</div>`).join('');
+
+                gridEl.innerHTML += `                                                                    <div class="card-container">                                                             <div class="card-front" id="card-front-${index}">                                        <div class="img-box">
+                                ${imageHTML}
+                                <div class="mutation-badge" id="badge-${index}">Normal</div>
+                            </div>
+                            <div class="card-name" style="font-size:0.85em; font-weight:700; margin: 3px 0; text-overflow:ellipsis; overflow:hidden; white-space:nowrap;">${nom}</div>
+          <div id="price-tag-${index}" style="color:var(--accent); font-weight:bold; font-size:0.95em; margin-bottom:2px;">${prixInitialCalcule} €</div>
+                            <div class="custom-select-wrapper">                                                      <div class="custom-select-trigger" id="select-trigger-${index}" onclick="toggleDropdown(${index}, event)">                                                                    <span id="select-label-${index}">Aucune mutation</span> ▾
+  </div>
+                                <div class="custom-options" id="options-${index}">                                       ${optionsHTML}
+                                </div>
+                            </div>
+                            <button class="btn-buy" onclick="prepareAddToCart('${nom}', ${prixDefaut}, ${index})">Ajouter</button>                                                                    <button class="btn-voice" onclick="playVoiceDescr('${nom}', this)">
+                                <span>🎙️ Vocal</span>                                                                 <div class="wave-line"></div><div class="wave-line"></div><div class="wave-line"></div>
+                            </button>
+                        </div>
+                    </div>`;
+            });                                                                              }
+
+        function toggleDropdown(index, event) {                                                  event.stopPropagation();                                                             document.querySelectorAll('.custom-options').forEach((el, idx) => {                      if(idx !== index) el.classList.remove('show');
+            });
+            const target = document.getElementById(`options-${index}`);
+            if(target) target.classList.toggle('show');
+        }
+
+        window.addEventListener('click', () => {
+            document.querySelectorAll('.custom-options').forEach(el => el.classList.remove('show'));
+        });
+
+        function selectMutationStyle(nom, prixDefaut, index, mutation) {
+            document.getElementById(`select-label-${index}`).innerText = mutation;
+            document.getElementById(`badge-${index}`).innerText = mutation === "Aucune mutation" ? "Normal" : mutation;
+
+            const cardFrontEl = document.getElementById(`card-front-${index}`);
+            const nouveauPrix = calculerPrixMutation(prixDefaut, mutation).toFixed(2);
+            document.getElementById(`price-tag-${index}`).innerText = `${nouveauPrix} €`;
+            cardFrontEl.className = "card-front";
+            cardFrontEl.classList.add('pop-animation');
+            setTimeout(() => cardFrontEl.classList.remove('pop-animation'), 400);
+
+            let key = mutation.toLowerCase().replace(/ /g, "-").replace("ô", "o").replace("-en-", "-en-");
+            if (mutation !== "Aucune mutation") {
+                cardFrontEl.classList.add(`mut-${key}`);
+            }                                                                                }
+
+        function playVoiceDescr(nom, btn) {                                                      if(btn.classList.contains('playing')) {
+                btn.classList.remove('playing');
+                return;
+            }
+            document.querySelectorAll('.btn-voice').forEach(b => b.classList.remove('playing'));
+            btn.classList.add('playing');
+            setTimeout(() => btn.classList.remove('playing'), 2500);                         }
+        function prepareAddToCart(nom, prixDefaut, index) {
+            const labelEl = document.getElementById(`select-label-${index}`);
+            const mutationChoisie = labelEl ? labelEl.innerText : "Normal";                      const prixFinalCalcule = calculerPrixMutation(prixDefaut, mutationChoisie).toFixed(2);                                                                                    addToCart(nom, prixFinalCalcule, mutationChoisie);
+        }
+        function addToCart(nom, prix, mutation) {
+            cart.push({id: Date.now() + Math.random(), nom, prix, mutation});
+            document.getElementById('cart-count').innerText = cart.length;
+            document.getElementById('modal-text').innerText = `${nom} (${mutation}) - ${prix} €`;
+            document.getElementById('modal').style.display = 'flex';                             updateCartPanel();
+        }
+
+        function removeItemFromCart(id) {
+            cart = cart.filter(item => item.id !== id);
+            document.getElementById('cart-count').innerText = cart.length;                       updateCartPanel();
+        }
+        function updateCartPanel() {
+            const container = document.getElementById('cartItemsContainer');
+            container.innerHTML = "";
+            let total = 0;
+            cart.forEach(item => {
+                total += parseFloat(item.prix);
+                container.innerHTML += `
+                    <div class="cart-item">
+                        <div class="cart-item-row"><strong>${item.nom}</strong><span style="color:var(--accent)">${item.prix} €</span></div>
+                        <div style="font-size:0.8em; color:#ffcc00; font-style:italic; margin-top:2px;">🧬 Mutation : ${item.mutation}</div>                                                      <button class="btn-remove-item" onclick="removeItemFromCart(${item.id})">🗑️ Supprimer</button>                                                                         </div>`;
+            });                                                                                  document.getElementById('cartTotalPrice').innerText = total.toFixed(2) + " €";                                                                                        }
+
+        function clearCart() { cart = []; document.getElementById('cart-count').innerText = "0"; updateCartPanel(); }
+        function closeModal() { document.getElementById('modal').style.display = 'none'; }
+        function toggleCartPanel(show) { document.getElementById('cartPanel').classList.toggle('open', show); }                                                                   function toggleScriptPanel(show) { document.getElementById('scriptPanel').classList.toggle('open', show); }                                                               function toggleVipModal(show) { document.getElementById('vipStoreModal').style.display = show ? 'flex' : 'none'; }
+
+        function buyVipGrade() {                                                                 window.open('https://paypal.me/klm925', '_blank');                                   isVip = true; reductionActive = 0.80;                                                document.getElementById('vipStatusBanner').classList.add('active');
+            document.getElementById('vipBannerTitle').innerHTML = "👑 Statut : Membre VIP";
+            toggleVipModal(false); renderGrid();
+        }
+
+        function toggleAuthModal(show) { document.getElementById('authModal').style.display = show ? 'flex' : 'none'; }
+        function switchAuthTab(type) {
+            document.getElementById('tabLogin').classList.toggle('active', type==='login');
+document.getElementById('tabRegister').classList.toggle('active', type==='register');
+            document.getElementById('loginForm').classList.toggle('active', type==='login');                                                                                          document.getElementById('registerForm').classList.toggle('active', type==='register');                                                                                }
+
+        function handleRegister(e) {
+            e.preventDefault();                                                                  const user = document.getElementById('regUser').value.trim();                        currentGeneratedCode = Math.floor(1000 + Math.random() * 9000).toString();
+            tempUserRegistration = { user, pass: document.getElementById('regPass').value };
+            document.getElementById('authTabsHeader').style.display = 'none';
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'none';
+            document.getElementById('emailVerifyZone').style.display = 'block';                  document.getElementById('simulatedEmailBox').innerHTML = `Code envoyé : <b>${currentGeneratedCode}</b>`;
+        }
+        function validateEmailVerification() {                                                   if (document.getElementById('emailVerifyInput').value.trim() === currentGeneratedCode) {                                                                                      registeredUsers[tempUserRegistration.user] = tempUserRegistration.pass;
+                alert("Compte activé !");                                                            toggleAuthModal(false);
+                renderGrid();                                                                    } else { alert("Code incorrect."); }
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const user = document.getElementById('loginUser').value.trim();
+            currentUser = user;                                                                  document.getElementById('loginBtn').innerText = "👤 " + user;                        toggleAuthModal(false);
+        }
+
+        function checkSecretCode() {                                                             if (document.getElementById('secretCodeInput').value.trim() === "ADMIN31200") {
+                isVip = true; reductionActive = 0.33;                                                document.getElementById('vipStatusBanner').classList.add('active');
+                document.getElementById('vipBannerTitle').innerHTML = "👑 Statut : Admin VIP";
+                renderGrid(); document.getElementById('codeSecretModal').style.display = 'none';                                                                                      } else { alert("Code invalide."); }
+        }
+
+        function handleSearch(query) {                                                           const containers = document.querySelectorAll('.card-container');
+            containers.forEach(container => {                                                        const nameEl = container.querySelector('.card-name');
+                if (nameEl) {                                                                            const name = nameEl.innerText.toLowerCase();
+                    container.style.display = name.includes(query.toLowerCase()) ? "block" : "none";                                                                                      }                                                                                });                                                                              }
+        renderGrid();                                                                    </script>
+</body>                                                                              </html>
